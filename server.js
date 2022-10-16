@@ -32,6 +32,31 @@ const db = mysql.createConnection(
   db.query(`SELECT * FROM role`, (err, rows) => {
     console.log(rows);
   });
+//get single department
+  db.query('SELECT * FROM department WHERE id = 1', (err, row) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(row);
+  });
+  //delete an employee
+  db.query(`DELETE FROM employee WHERE id = ?`, 1, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(result);
+  });
+  //Create an employee
+  const sql = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id) 
+              VALUES (?,?,?,?,?)`;
+const params = [1, 'Ronald', 'Firbank', 1, 1];
+
+db.query(sql, params, (err, result) => {
+  if (err) {
+    console.log(err);
+  }
+  console.log(result);
+});
   // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
