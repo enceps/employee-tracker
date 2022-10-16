@@ -1,4 +1,4 @@
-
+const inquirer = require("inquirer");
 const mysql = require('mysql2');
 const express = require('express');
 const PORT = process.env.PORT || 3001;
@@ -26,8 +26,83 @@ const db = mysql.createConnection(
       password: '4Fearfirefox',
       database: 'tracker'
     },
-    console.log('Connected to the election database.')
+    console.log('Connected to the employee database.')
   );
+
+  startPrompt();
+
+
+  function startPrompt() {
+
+    inquirer
+    .prompt({
+      type: "list",
+      name: "task",
+      message: "CHOOSE OPTION",
+      choices: [
+        "View Employees",
+        "View Employees by Department",
+        "Add Employee",
+        "Remove Employees",
+        "Update Employee Role",
+        "Add Role",
+        "End"]
+    })
+    .then(function ({ task }) {
+      switch (task) {
+        case "View Employees":
+          viewEmployee();
+          break;
+
+        case "View Employees by Department":
+          viewEmployeeByDepartment();
+          break;
+      
+        case "Add Employee":
+          addEmployee();
+          break;
+
+        case "Remove Employees":
+          removeEmployees();
+          break;
+
+        case "Update Employee Role":
+          updateEmployeeRole();
+          break;
+
+        case "Add Role":
+          addRole();
+          break;
+
+        case "End":
+          connection.end();
+          break;
+      }
+    });
+};
+  
+function viewEmployee() {
+  console.log("Viewing employees\n");
+
+
+  var query =
+  `SELECT employee.*, role.id 
+  AS role_name 
+  FROM employee 
+  LEFT JOIN role 
+  ON employee.role_id = role.id`;
+
+  db.query(query, function (err, res) {
+    if (err) throw err;
+
+    console.table(res);
+    console.log("Employees viewed!\n");
+
+    startPrompt();
+  });
+
+}
+
 
   // Get all employees
 app.get('/api/employee', (req, res) => {
