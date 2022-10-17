@@ -80,7 +80,7 @@ const db = mysql.createConnection(
       }
     });
 };
-  
+  //View all employees
 function viewEmployee() {
   console.log("Viewing employees\n");
 
@@ -101,7 +101,148 @@ function viewEmployee() {
     startPrompt();
   });
 
+};
+
+//View employees by department
+function viewEmployeeByDepartment(){
+
+  console.log("View By Department\n");
+
+  var query =
+  `SELECT department.*, department.id
+  FROM department`;
+  db.query(query, function (err, res) {
+    if (err) throw err;
+    const departmentChoices = res.map(data => ({
+      value: data.id, name: data.name
+    }));
+    console.table(res);
+    console.log("Departments viewed!\n");
+
+   departmentPrompt(departmentChoices);
+  });
+};
+
+function departmentPrompt(departmentChoices){
+
+  inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "departmentId",
+      message: "Which department would you choose?",
+      choices: departmentChoices
+    }
+  ])
+  .then(function (answer) {
+    console.log("answer ", answer.departmentId);
+
+    var query =  `SELECT employee.*, role.id 
+    AS role_name 
+    FROM employee 
+    LEFT JOIN role 
+    ON employee.role_id = role.id 
+    WHERE employee.id = ?`
+
+
+db.query(query, answer.departmentId, function (err, res) {
+  if (err) throw err;
+
+  console.table("response ", res);
+  console.log(res.affectedRows + "Employees are viewed!\n");
+
+  startPrompt();
+});
+  });
+};
+
+//add Employee
+
+function addEmployee() {
+  console.log("Inserting an employee!")
+
+  var query =
+    `SELECT role.id, role.title, role.salary 
+      FROM role `
+
+  db.query(query, function (err, res) {
+    if (err) throw err;
+
+    const roleChoices = res.map(({ id, title, salary }) => ({
+      value: id, title: `${title}`, salary: `${salary}`
+    }));
+
+    console.table(res);
+    console.log("RoleToInsert!");
+
+    promptInsert(roleChoices);
+  });
 }
+
+function promptInsert(roleChoices) {
+
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "What is the employee's first name?"
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "What is the employee's last name?"
+      },
+      {
+        type: "list",
+        name: "role_id",
+        message: "What is the employee's role?",
+        choices: roleChoices
+      },
+    ])
+    .then(function (answer) {
+      console.log(answer);
+
+      var query =`INSERT INTO employee SET ?`
+      // when finished prompting, insert a new item into the db with that info
+      db.query(query,
+        {
+          
+          first_name: answer.first_name,
+          last_name: answer.last_name,
+          role_id: answer.role_id,
+          
+         
+        },
+        function (err, res) {
+          if (err) throw err;
+
+          console.table(res);
+          console.log(`${answer.first_name}` + ` ${answer.last_name} ` + `  Inserted successfully!\n`);
+
+          startPrompt();
+        });
+    });
+}
+
+//remove Employee
+
+//update Employee
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   // Get all employees
