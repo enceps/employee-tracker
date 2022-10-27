@@ -1,5 +1,7 @@
 # employee-tracker
 
+## Video Link : https://drive.google.com/file/d/1UlUDNkU1ifbja5KnZVQIKruDJo_9eO7x/view
+
 
 GIVEN a command-line application that accepts user input
 
