@@ -3,6 +3,13 @@
 ## Video Link : https://drive.google.com/file/d/1UlUDNkU1ifbja5KnZVQIKruDJo_9eO7x/view
 
 
+##Instructions
+
+intialize with npm init -y
+
+install inquierer run script
+
+
 GIVEN a command-line application that accepts user input
 
 WHEN I start the application
